@@ -17,10 +17,6 @@ from google import genai
 from google.genai import types
 import anthropic
 
-# ---------------------------------------------------------------------------
-# Estimated costs per 1M INPUT & OUTPUT tokens (USD) as of March 2026
-# Vietnamese text generally consumes ~1.5x - 2.0x more tokens than English due to Unicode/diacritics.
-# ---------------------------------------------------------------------------
 PRICING_1M_TOKENS = {
     "gpt-4o": {"input": 5.00, "output": 20.00},
     "gpt-4o-mini": {"input": 0.150, "output": 0.600},
@@ -30,7 +26,6 @@ PRICING_1M_TOKENS = {
     "claude-3-5-haiku": {"input": 0.80, "output": 4.00},
 }
 
-# Standard Model Identifiers
 OPENAI_MODEL = "gpt-4o"
 OPENAI_MINI_MODEL = "gpt-4o-mini"
 GEMINI_MODEL = "gemini-2.5-flash"
@@ -38,7 +33,7 @@ ANTHROPIC_MODEL = "claude-3-5-haiku"
 
 
 # ---------------------------------------------------------------------------
-# Task 1 — Call OpenAI (GPT-4o)
+# Task 1
 # ---------------------------------------------------------------------------
 def call_openai(
     prompt: str,
@@ -68,8 +63,9 @@ def call_openai(
 
 
 # ---------------------------------------------------------------------------
-# Task 2 — Call Google Gemini 2.5 (Standard Practical Model)
+# Task 2
 # ---------------------------------------------------------------------------
+
 def call_gemini(
     prompt: str,
     model: str = GEMINI_MODEL,
@@ -101,8 +97,9 @@ def call_gemini(
     return response_text, latency, usage
 
 # ---------------------------------------------------------------------------
-# Task 3 — Call Anthropic Claude (Exploratory track)
+# Task 3 
 # ---------------------------------------------------------------------------
+
 def call_anthropic(
     prompt: str,
     model: str = ANTHROPIC_MODEL,
@@ -133,8 +130,9 @@ def call_anthropic(
 
 
 # ---------------------------------------------------------------------------
-# Task 4 — Compare Models (OpenAI GPT-4o vs OpenAI Mini vs Gemini 2.5 Flash)
+# Task 4 
 # ---------------------------------------------------------------------------
+
 def compare_models(prompt: str) -> dict:
     # 1. Call models
     gpt4o_text, gpt4o_lat, gpt4o_usage = call_openai(prompt, model=OPENAI_MODEL)
@@ -171,8 +169,9 @@ def compare_models(prompt: str) -> dict:
 
 
 # ---------------------------------------------------------------------------
-# Task 5 — Streaming chatbot with Gemini 2.5 (Focus Model)
+# Task 5 
 # ---------------------------------------------------------------------------
+
 def streaming_chatbot() -> None:
 
     client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
@@ -189,7 +188,6 @@ def streaming_chatbot() -> None:
             break
 
         history.append({"role": "user", "parts": [{"text": user_input}]})
-        # Giữ lại tối đa 3 lượt (6 tin nhắn: 3 user + 3 model)
         history = history[-6:]
 
         print("Gemini: ", end="", flush=True)
@@ -275,7 +273,6 @@ if __name__ == "__main__":
     print("=== Model Comparison Test ===")
     test_prompt = "Hãy giải thích sự khác biệt giữa temperature và top_p bằng tiếng Việt ngắn gọn trong 2 câu."
     try:
-        # Note: Requires valid API keys set in environment variables
         result = compare_models(test_prompt)
         for model_name, stats in result.items():
             print(f"\n[{model_name.upper()}]")
